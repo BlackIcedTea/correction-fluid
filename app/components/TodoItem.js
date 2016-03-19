@@ -1,7 +1,7 @@
-import React, { Component, PropTypes } from 'react';
-import classnames from 'classnames';
-import TodoTextInput from './TodoTextInput';
-import style from './TodoItem.css';
+import React, { Component, PropTypes } from 'react'
+import classnames from 'classnames'
+import TodoTextInput from './TodoTextInput'
+import style from './TodoItem.css'
 
 export default class TodoItem extends Component {
 
@@ -13,47 +13,47 @@ export default class TodoItem extends Component {
   };
 
   constructor(props, context) {
-    super(props, context);
+    super(props, context)
     this.state = {
       editing: false
-    };
+    }
   }
 
   handleDoubleClick = () => {
-    this.setState({ editing: true });
+    this.setState({ editing: true })
   };
 
   handleSave = text => {
-    const { todo, deleteTodo, editTodo } = this.props;
+    const { todo, deleteTodo, editTodo } = this.props
     if (text.length === 0) {
-      deleteTodo(todo.id);
+      deleteTodo(todo.id)
     } else {
-      editTodo(todo.id, text);
+      editTodo(todo.id, text)
     }
-    this.setState({ editing: false });
+    this.setState({ editing: false })
   };
 
   handleComplete = () => {
-    const { todo, completeTodo } = this.props;
-    completeTodo(todo.id);
+    const { todo, completeTodo } = this.props
+    completeTodo(todo.id)
   };
 
   handleDelete = () => {
-    const { todo, deleteTodo } = this.props;
-    deleteTodo(todo.id);
+    const { todo, deleteTodo } = this.props
+    deleteTodo(todo.id)
   };
 
   render() {
-    const { todo, completeTodo, deleteTodo } = this.props;
+    const { todo, completeTodo, deleteTodo } = this.props
 
-    let element;
+    let element
     if (this.state.editing) {
       element = (
         <TodoTextInput text={todo.text}
           editing={this.state.editing}
           onSave={this.handleSave}
         />
-      );
+      )
     } else {
       element = (
         <div className={style.view}>
@@ -70,7 +70,7 @@ export default class TodoItem extends Component {
             onClick={this.handleDelete}
           />
         </div>
-      );
+      )
     }
 
     return (
@@ -83,6 +83,6 @@ export default class TodoItem extends Component {
       >
         {element}
       </li>
-    );
+    )
   }
 }

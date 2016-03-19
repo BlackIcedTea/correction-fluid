@@ -20,6 +20,7 @@
     "consistent-return": 0,
     "padded-blocks": 0,
     "quotes": [1, "single"],
+    "semi": [2, "never"],
     "comma-style": [2, "last"],
     "no-unused-vars": 0,
     "no-console": 0,

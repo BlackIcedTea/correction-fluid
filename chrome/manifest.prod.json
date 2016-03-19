@@ -18,6 +18,10 @@
   "background": {
     "page": "background.html"
   },
+  "options_ui": {
+    "page": "options.html",
+    "chrome_style": false
+  },
   "permissions": [ "contextMenus", "tabs", "storage", "https://github.com/*" ],
   "content_security_policy": "default-src 'self'; script-src 'self'; style-src * 'unsafe-inline'; img-src 'self' data:;"
 }

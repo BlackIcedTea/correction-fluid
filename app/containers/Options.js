@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import RuleTool from '../components/RuleTool'
 import RuleCreator from '../components/RuleCreator'
 import RuleList from '../components/RuleList'
 import * as ActionCreator from '../creators/rules'
@@ -26,6 +27,7 @@ export default class App extends Component {
     return (
       <div>
         <RuleList rules={rules} creators={creators} />
+        <RuleTool rules={rules} creators={creators} />
         <RuleCreator rules={rules} creators={creators} />
       </div>
     )

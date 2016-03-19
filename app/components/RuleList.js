@@ -1,31 +1,38 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
+import React, { Component, PropTypes } from 'react'
+import LinkedStateMixin from 'react-addons-linked-state-mixin'
+import { decorate as mixin } from 'react-mixin'
 import pure from 'purecss'
 import classNames from 'classnames'
+import RuleItem from './RuleItem'
 
-export default class RuleCreator extends Component {
+@mixin(LinkedStateMixin)
+export default class RuleList extends Component {
+  static propTypes = {
+    rules: PropTypes.array.isRequired,
+    creators: PropTypes.object.isRequired
+  }
+
   render() {
     return (
-      <form className={classNames(pure['pure-form'], pure['pure-form-stacked'])}>
-        <fieldset>
-          <legend>Create a rule</legend>
-          <label htmlFor="url">When tab URL matched</label>
-          <input id="url" type="text" list="datalist-url" />
-          <datalist id="datalist-url">
-            <option value="*" />
-          </datalist>
-          <label htmlFor="find">Find All</label>
-          <input id="find" type="text" />
-          <label htmlFor="replace">Replace To</label>
-          <input id="replace" type="text" />
-          <button
-            className={classNames(pure['pure-button'], pure['pure-button-primary'])}
-            type="submit"
-          >
-            Okay
-          </button>
-        </fieldset>
-      </form>
+      <table className={classNames(
+        pure['pure-table'],
+        pure['pure-table-bordered'],
+        pure['pure-table-striped']
+        )}
+      >
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>URL</th>
+            <th>Find</th>
+            <th>Replace</th>
+            <th>Enable</th>
+          </tr>
+        </thead>
+        <tbody>
+          {this.props.rules.map(rule => <RuleItem rule={rule} />)}
+        </tbody>
+      </table>
     )
   }
 }

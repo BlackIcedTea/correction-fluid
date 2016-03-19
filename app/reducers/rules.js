@@ -46,6 +46,12 @@ const actionsMap = {
       }
       return rule
     })
+  },
+  [ActionTypes.CLEAR_RULES](state, action) {
+    return []
+  },
+  [ActionTypes.IMPORT_RULES](state, action) {
+    return action.rules
   }
 }
 

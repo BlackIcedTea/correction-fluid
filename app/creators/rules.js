@@ -19,3 +19,11 @@ export function enableRule(id) {
 export function disableRule(id) {
   return { type: types.DISABLE_RULE, id }
 }
+
+export function clearRules() {
+  return { type: types.CLEAR_RULES }
+}
+
+export function importRules() {
+  return { type: types.IMPORT_RULES }
+}

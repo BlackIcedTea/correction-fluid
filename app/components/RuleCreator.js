@@ -21,7 +21,6 @@ export default class RuleCreator extends Component {
   }
 
   handleAdd = (event) => {
-    console.log(this.props.creators)
     const { addRule } = this.props.creators
     const { url, find, replace } = this.state
     addRule(url, find, replace)

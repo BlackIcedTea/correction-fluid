@@ -1,6 +1,5 @@
 import { combineReducers } from 'redux'
-import todos from './todos'
-
+import rules from './rules'
 export default combineReducers({
-  todos
+  rules
 })

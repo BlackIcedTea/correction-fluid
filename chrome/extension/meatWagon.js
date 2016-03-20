@@ -12,11 +12,11 @@ function getAllTextNodes(node) {
 chrome.storage.local.get('state', obj => {
   const initialState = JSON.parse(obj.state || '{}')
   let state = createStore(initialState).getState()
-  let rules = state.rules.filter(rule => xRegExp(rule.url).test(document.URL))
+  let rules = state.rules.filter(rule => xRegExp(rule.url).test(document.URL) && rule.isEnabled)
   getAllTextNodes(document).forEach(node => {
     let textNode = node
     rules.forEach(rule => {
-      let find = xRegExp(rule.find)
+      let find = xRegExp(rule.find, 'g')
       let replace = rule.replace
       textNode.textContent = xRegExp.replace(textNode.textContent, find, replace)
     })

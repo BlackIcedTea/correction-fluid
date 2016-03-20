@@ -62,11 +62,12 @@
     "sinon": "^1.17.1",
     "style-loader": "^0.12.3",
     "webpack": "^1.12.9",
-    "webpack-dev-server": "^1.10.1"
+    "webpack-dev-server": "^1.14.0"
   },
   "dependencies": {
     "bluebird": "^2.10.1",
     "classnames": "^2.2.3",
+    "lodash": "^4.6.1",
     "purecss": "^0.6.0",
     "react": "^0.14.7",
     "react-addons-linked-state-mixin": "^0.14.7",
@@ -75,6 +76,7 @@
     "react-mixin": "^2.0.2",
     "react-redux": "^4.3.0",
     "redux": "^3.2.1",
-    "redux-thunk": "^1.0.3"
+    "redux-thunk": "^1.0.3",
+    "xregexp": "^3.1.0"
   }
 }

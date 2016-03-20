@@ -1,17 +1,13 @@
-function isInjected(tabId) {
-  return chrome.tabs.executeScriptAsync(tabId, {
-    code: `var injected = window.reactExampleInjected;
-      window.reactExampleInjected = true;
-      injected;`,
-    runAt: 'document_start'
-  })
-}
+import _ from 'lodash'
+import xRegExp from 'xregexp'
+import createStore from '../../../app/store/configureStore'
+
+let state = { rules: [] }
 
 function loadScript(name, tabId, cb) {
   if (process.env.NODE_ENV === 'production') {
     chrome.tabs.executeScript(tabId, { file: `/js/${name}.bundle.js`, runAt: 'document_end' }, cb)
   } else {
-    // dev: async fetch bundle
     fetch(`https://localhost:3000/js/${name}.bundle.js`)
     .then(res => res.text())
     .then(fetchRes => {
@@ -30,13 +26,21 @@ function loadScript(name, tabId, cb) {
   }
 }
 
-const arrowURLs = ['^https://github\\.com']
+function updateState() {
+  chrome.storage.local.get('state', obj => {
+    const initialState = JSON.parse(obj.state || '{}')
+    state = createStore(initialState).getState()
+  })
+}
 
-chrome.tabs.onUpdated.addListener(async function(tabId, changeInfo, tab) {
-  if (changeInfo.status !== 'loading' || !tab.url.match(arrowURLs.join('|'))) return
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (changeInfo.status !== 'loading') {
+    return
+  }
 
-  const result = await isInjected(tabId)
-  if (chrome.runtime.lastError || result[0]) return
-
-  loadScript('inject', tabId, () => console.log('load inject bundle success!'))
+  if (_.some(state.rules, rule => xRegExp(rule.url).test(tab.url))) {
+    loadScript('meatWagon', tabId, () => console.log(`${tab.url} injected.`))
+  }
 })
+
+updateState()

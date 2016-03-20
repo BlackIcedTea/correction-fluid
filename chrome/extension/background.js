@@ -24,4 +24,4 @@ promisifyAll(chrome.storage, [
   'local',
 ])
 
-// require('./background/inject')
+require('./background/inject')

@@ -4,6 +4,7 @@ const webpack = require('webpack');
 module.exports = {
   entry: {
     options: path.join(__dirname, '../chrome/extension/options'),
+    meatWagon: path.join(__dirname, '../chrome/extension/meatWagon'),
     popup: path.join(__dirname, '../chrome/extension/popup'),
     background: path.join(__dirname, '../chrome/extension/background'),
     inject: path.join(__dirname, '../chrome/extension/inject')

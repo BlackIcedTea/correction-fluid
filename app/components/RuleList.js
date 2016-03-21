@@ -27,10 +27,11 @@ export default class RuleList extends Component {
             <th>Find</th>
             <th>Replace</th>
             <th>Enable</th>
+            <th>Other</th>
           </tr>
         </thead>
         <tbody>
-          {this.props.rules.map(rule => <RuleItem rule={rule} />)}
+          {this.props.rules.map(rule => <RuleItem rule={rule} creators={this.props.creators} />)}
         </tbody>
       </table>
     )

@@ -26,6 +26,7 @@ export default class RuleList extends Component {
             <th>URL</th>
             <th>Find</th>
             <th>Replace</th>
+            <th>Selector</th>
             <th>Enable</th>
             <th>Other</th>
           </tr>

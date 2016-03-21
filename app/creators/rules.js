@@ -1,15 +1,15 @@
 import * as types from '../actions/ActionTypes'
 
-export function addRule(url, find, replace) {
-  return { type: types.ADD_RULE, url, find, replace }
+export function addRule(url, find, replace, selector) {
+  return { type: types.ADD_RULE, url, find, replace, selector: selector || '*' }
 }
 
 export function deleteRule(id) {
   return { type: types.DELETE_RULE, id }
 }
 
-export function editTodo(id, url, find, replace) {
-  return { type: types.EDIT_RULE, url, find, replace }
+export function editRule(id, url, find, replace, selector) {
+  return { type: types.EDIT_RULE, id, url, find, replace, selector: selector || '*' }
 }
 
 export function enableRule(id) {

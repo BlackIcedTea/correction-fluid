@@ -1,12 +1,11 @@
+import _ from 'lodash'
 import React, { Component, PropTypes } from 'react'
-import LinkedStateMixin from 'react-addons-linked-state-mixin'
 import update from 'react-addons-update'
 import { decorate as mixin } from 'react-mixin'
 import ToggleDisplay from 'react-toggle-display'
 import pure from 'purecss'
 import classNames from 'classnames'
 
-@mixin(LinkedStateMixin)
 export default class RuleCreator extends Component {
   static propTypes = {
     rule: PropTypes.object.isRequired,
@@ -17,7 +16,7 @@ export default class RuleCreator extends Component {
     super(props, context)
     this.state = {
       editing: false,
-      rule: {}
+      rule: Object.assign({}, this.props.rule)
     }
   }
 
@@ -53,7 +52,7 @@ export default class RuleCreator extends Component {
   handleSave = e => {
     const { rule } = this.state
     const { editRule } = this.props.creators
-    editRule(rule.id, rule.url, rule.find, rule.replace)
+    editRule(rule.id, rule.url, rule.find, rule.replace, rule.selector)
     this.setState(update(this.state, {
       editing: {
         $set: false
@@ -67,6 +66,31 @@ export default class RuleCreator extends Component {
     deleteRule(rule.id)
   }
 
+  linkState = (stateField) => {
+    let fields = stateField.split('.')
+    let nextState = {}
+    return e => {
+      _.reduce(fields, (state, field, i) => {
+        if (!state[field]) {
+          if (i !== _.findLastIndex(fields)) {
+            state[field] = {}
+          } else {
+            state[field] = {
+              $set: (type => {
+                if (['checkbox', 'radio'].includes(type)) {
+                  return e.target.checked
+                }
+                return e.target.value
+              })(e.target.type)
+            }
+          }
+        }
+        return state[field]
+      }, nextState)
+      this.setState(update(this.state, nextState))
+    }
+  }
+
   render() {
     const rule = this.props.rule
     const state = this.state
@@ -74,12 +98,12 @@ export default class RuleCreator extends Component {
     let result
 
     if (state.editing) {
-      result = (
+      return (
         <tr>
           <td>{rule.id}</td>
           <td>
             <input id="url" type="text" list="datalist-url"
-              valueLink={this.linkState('rule.url')}
+              value={state.rule.url} onChange={this.linkState('rule.url')}
             />
             <datalist id="datalist-url">
               <option value="*" />
@@ -87,12 +111,17 @@ export default class RuleCreator extends Component {
           </td>
           <td>
             <input id="find" type="text"
-              valueLink={this.linkState('rule.find')}
+              value={state.rule.find} onChange={this.linkState('rule.find')}
             />
           </td>
           <td>
             <input id="replace" type="text"
-              valueLink={this.linkState('rule.replace')}
+              value={state.rule.replace} onChange={this.linkState('rule.replace')}
+            />
+          </td>
+          <td>
+            <input id="selector" type="text"
+              value={state.rule.selector} onChange={this.linkState('rule.selector')}
             />
           </td>
           <td>
@@ -110,30 +139,28 @@ export default class RuleCreator extends Component {
           </td>
         </tr>
       )
-    } else {
-      result = (
-        <tr>
-          <td>{rule.id}</td>
-          <td>{rule.url}</td>
-          <td>{rule.find}</td>
-          <td>{rule.replace}</td>
-          <td>
-            <input type="checkbox" checked={rule.isEnabled}
-              onChange={this.handleIsEnabledChange}
-            />
-          </td>
-          <td>
-            <button className={pure['pure-button']} onClick={this.handleEdit}>
-            Edit
-            </button>
-            <button className={pure['pure-button']} onClick={this.handleDelete}>
-            Delete
-            </button>
-          </td>
-        </tr>
-      )
     }
-
-    return result
+    return (
+      <tr>
+        <td>{rule.id}</td>
+        <td>{rule.url}</td>
+        <td>{rule.find}</td>
+        <td>{rule.replace}</td>
+        <td>{rule.selector}</td>
+        <td>
+          <input type="checkbox" checked={rule.isEnabled}
+            onChange={this.handleIsEnabledChange}
+          />
+        </td>
+        <td>
+          <button className={pure['pure-button']} onClick={this.handleEdit}>
+          Edit
+          </button>
+          <button className={pure['pure-button']} onClick={this.handleDelete}>
+          Delete
+          </button>
+        </td>
+      </tr>
+    )
   }
 }

@@ -9,6 +9,7 @@ const actionsMap = {
       url: action.url,
       find: action.find,
       replace: action.replace,
+      selector: action.selector,
       isEnabled: true
     }]
   },
@@ -21,7 +22,8 @@ const actionsMap = {
         return Object.assign({}, rule, {
           url: action.url,
           find: action.find,
-          replace: action.replace
+          replace: action.replace,
+          selector: action.selector
         })
       }
       return rule

@@ -14,11 +14,13 @@ chrome.storage.local.get('state', obj => {
   let state = createStore(initialState).getState()
   let rules = state.rules.filter(rule => xRegExp(rule.url).test(document.URL) && rule.isEnabled)
   getAllTextNodes(document).forEach(node => {
-    let textNode = node
     rules.forEach(rule => {
-      let find = xRegExp(rule.find, 'g')
-      let replace = rule.replace
-      textNode.textContent = xRegExp.replace(textNode.textContent, find, replace)
+      if (Array.from(document.querySelectorAll(rule.selector))
+        .some(parentNode => parentNode.contains(node))) {
+        let find = xRegExp(rule.find, 'ig')
+        let replace = rule.replace
+        node.textContent = xRegExp.replace(node.textContent, find, replace)
+      }
     })
   })
 })

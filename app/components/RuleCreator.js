@@ -16,14 +16,15 @@ export default class RuleCreator extends Component {
     this.state = {
       url: '',
       find: '',
-      replace: ''
+      replace: '',
+      selector: ''
     }
   }
 
   handleAdd = (event) => {
     const { addRule } = this.props.creators
-    const { url, find, replace } = this.state
-    addRule(url, find, replace)
+    const { url, find, replace, selector } = this.state
+    addRule(url, find, replace, selector)
     event.preventDefault()
   }
 
@@ -41,6 +42,8 @@ export default class RuleCreator extends Component {
           <input id="find" type="text" valueLink={this.linkState('find')} />
           <label htmlFor="replace">Replace To</label>
           <input id="replace" type="text" valueLink={this.linkState('replace')} />
+          <label htmlFor="selector">CSS Selector(Optional)</label>
+          <input id="selector" type="text" valueLink={this.linkState('selector')} />
           <button
             className={classNames(pure['pure-button'], pure['pure-button-primary'])}
             onClick={this.handleAdd}

@@ -3,25 +3,31 @@
   "name": "Replaced Corpses",
   "manifest_version": 2,
   "description": "",
-  "browser_action": {
-    "default_title": "Replaced Corpses Quick Setting",
-    "default_popup": "popup.html"
-  },
   "icons": {
     "16": "img/icon-16.png",
     "48": "img/icon-48.png",
     "128": "img/icon-128.png"
   },
+  "browser_action": {
+    "default_title": "Replaced Corpses Quick Setting",
+    "default_popup": "popup.html"
+  },
   "web_accessible_resources": [
     "inject.html"
   ],
   "background": {
-    "page": "background.html"
+    "page": "background.html",
+    "persistent": false
   },
   "options_ui": {
     "page": "options.html",
     "chrome_style": false
   },
-  "permissions": ["storage", "tabs", "http://*/", "https://*/"],
+  "permissions": [
+    "storage",
+    "tabs",
+    "contextMenus",
+    "http://*/",
+    "https://*/"],
   "content_security_policy": "default-src 'self'; script-src 'self' https://localhost:3000 'unsafe-eval'; connect-src https://localhost:3000 wss://localhost:3000; style-src * 'unsafe-inline' 'self' blob:; img-src 'self' data:;"
 }

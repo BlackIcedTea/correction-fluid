@@ -18,10 +18,12 @@ function promisifyAll(obj, list) {
 
 // let chrome extension api support Promise
 promisifyAll(chrome, [
-  'tabs'
+  'tabs',
+  'contextMenus'
 ])
 promisifyAll(chrome.storage, [
   'local',
 ])
 
 require('./background/inject')
+require('./background/contextMenus')

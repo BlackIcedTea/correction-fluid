@@ -8,6 +8,7 @@ function replaceCorpse(rule, node) {
   let find = xRegExp(rule.find, 'ig')
   let replace = rule.replace
   node.textContent = xRegExp.replace(node.textContent, find, replace)
+  console.log(rule, node)
 }
 
 function getAllTextNodes(node) {
@@ -25,42 +26,53 @@ function getAllTextNodesWithoutDenyNodes(node, denyNodeList) {
   return getAllTextNodes(node).filter(denyNodesFilter(denyNodeList))
 }
 
+function getTextNodesWithoutDenyNodes(denyNodeList) {
+  return node => getAllTextNodes(node).filter(denyNodesFilter(denyNodeList))
+}
+
 chrome.storage.local.get('state', obj => {
   const initialState = JSON.parse(obj.state || '{}')
   let state = createStore(initialState).getState()
-  let rules = state.rules.filter(rule => xRegExp(rule.url).test(document.URL) && rule.isEnabled)
-  getAllTextNodesWithoutDenyNodes(document).forEach(node =>
-    rules.filter(rule =>
-      _(document.querySelectorAll(rule.selector))
-        .filter(denyNodesFilter(denyNodes))
-        .value()
-        .some(parentNode => parentNode.contains(node))
-    ).forEach(rule => replaceCorpse(rule, node))
+  let rules = _.groupBy(state.rules.filter(rule =>
+    xRegExp(rule.url).test(document.URL) && rule.isEnabled)
+  , 'selector')
+
+  console.log(rules)
+
+  console.log(getTextNodesWithoutDenyNodes(denyNodes)(document).length)
+
+  /*
+  rules.forEach(rule =>
+    console.log(_(document.querySelectorAll(rule.selector))
+      .flatMap(getTextNodesWithoutDenyNodes(denyNodes))
+      .uniq().value().length)
+    //  .each(node => replaceCorpse(rule, node))
   )
+  */
 
   new MutationObserver(mutations => {
+    /*
     function characterData({ target }) {
-      let node = target
-      rules.filter(rule =>
+      rules.forEach(rule => {
         _(document.querySelectorAll(rule.selector))
-          .filter(denyNodesFilter(denyNodes))
-          .value()
-          .some(parentNode => parentNode.contains(node))
-      ).forEach(rule => replaceCorpse(rule, node))
+          .flatMap(getTextNodesWithoutDenyNodes(denyNodes))
+          .uniq()
+          .each(node => replaceCorpse(rule, node))
+      })
     }
 
     function childList({ target }) {
-      getAllTextNodesWithoutDenyNodes(target).forEach(node =>
-        rules.filter(rule =>
-          _(document.querySelectorAll(rule.selector))
-            .filter(denyNodesFilter(denyNodes))
-            .value()
-            .some(parentNode => parentNode.contains(node))
-        ).forEach(rule => replaceCorpse(rule, node))
-      )
+      rules.forEach(rule => {
+        _(document.querySelectorAll(rule.selector))
+        _(getTextNodesWithoutDenyNodes(denyNodes)(target))
+          .flatMap(getTextNodesWithoutDenyNodes(denyNodes))
+          .uniq()
+          .each(node => replaceCorpse(rule, node))
+      })
     }
+    */
 
-    _.each(mutations, mutation => ({ characterData, childList })[mutation.type](mutation))
+    // _.each(mutations, mutation => ({ characterData, childList })[mutation.type](mutation))
   })
   .observe(document.body, {
     characterData: true,

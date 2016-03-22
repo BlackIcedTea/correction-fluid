@@ -2,8 +2,11 @@ import _ from 'lodash'
 import xRegExp from 'xregexp'
 import createStore from '../../app/store/configureStore'
 
+const denyNodes = ['style'].map(x => x.toUpperCase())
+
 function getAllTextNodes(node) {
-  if (node.nodeType === Node.TEXT_NODE) {
+  if (node.nodeType === Node.TEXT_NODE &&
+    !denyNodes.includes(node.parentNode.nodeName)) {
     return node
   }
   return _.flatMap(node.childNodes, getAllTextNodes)
@@ -16,6 +19,7 @@ chrome.storage.local.get('state', obj => {
   getAllTextNodes(document).forEach(node => {
     rules.forEach(rule => {
       if (Array.from(document.querySelectorAll(rule.selector))
+        .filter(parentNode => !['style'].map(x => x.toUpperCase()).includes(parentNode.nodeName))
         .some(parentNode => parentNode.contains(node))) {
         let find = xRegExp(rule.find, 'ig')
         let replace = rule.replace

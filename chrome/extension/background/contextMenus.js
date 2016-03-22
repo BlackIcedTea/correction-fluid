@@ -13,5 +13,6 @@ chrome.contextMenus.create({
 chrome.contextMenus.onClicked.addListener(async ({ menuItemId, pageUrl, selectionText }, tab) => {
   if (menuItemId === CREATE_RULE_WITH_SELECTION) {
     let selector = await chromePromise.tabs.sendMessage(tab.id, { type: 'selector' })
+    console.log(selector)
   }
 })

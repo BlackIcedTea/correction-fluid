@@ -44,6 +44,10 @@ function replaceCorpse({ find, replace }, node) {
   node.textContent = xRegExp.replace(node.textContent, find, replace)
 }
 
+function denyNodesFilter(denyNodeList) {
+  return ({ parentNode: { nodeName } }) => !denyNodeList.includes(nodeName)
+}
+
 function getAllTextNodes(node) {
   if (getVisibleArea(node) <= 0) {
     return []
@@ -54,20 +58,30 @@ function getAllTextNodes(node) {
   return _.flatMap(node.childNodes, getAllTextNodes)
 }
 
-function denyNodesFilter(denyNodeList) {
-  return ({ parentNode: { nodeName } }) => !denyNodeList.includes(nodeName)
+function getAllTextNodesWithInvisible(node) {
+  if (node.nodeType === Node.TEXT_NODE) {
+    return node
+  }
+  return _.flatMap(node.childNodes, getAllTextNodes)
 }
 
 function getAllTextNodesWithoutDenyNodes(node, denyNodeList) {
   return getAllTextNodes(node).filter(denyNodesFilter(denyNodeList))
 }
 
+function getAllTextNodesDenyNodes(node, denyNodeList) {
+  return getAllTextNodesWithInvisible(node)
+    .filter(denyNodesFilter(denyNodeList))
+    .filter(x => getVisibleArea(x) > 0)
+}
+
 let getTextNodesWithoutDenyNodes = _.curryRight(getAllTextNodesWithoutDenyNodes)
+
+let getTextNodesDenyNodes = _.curryRight(getAllTextNodesDenyNodes)
 
 let queryTextNodes = (node, selector) => {
   if ((node.matches && !node.matches(selector))
   || getVisibleArea(node) <= 0) {
-    console.log(node, getVisibleArea(node), _.isElement(node))
     return []
   }
   if (node.nodeType === Node.TEXT_NODE) {
@@ -76,8 +90,21 @@ let queryTextNodes = (node, selector) => {
   return _.flatMap(node.childNodes, x => queryTextNodes(x, selector))
 }
 
+let queryTextNodes2 = (node, selector) => {
+  if (node.matches && !node.matches(selector)) {
+    return []
+  }
+  if (node.nodeType === Node.TEXT_NODE && getVisibleArea(node.parentNode) >= 0) {
+    return node
+  }
+  return _.flatMap(node.childNodes, x => queryTextNodes2(x, selector))
+}
+
 let queryTextNodesWithFilter = (node, selector, filter) =>
   queryTextNodes(node, selector).filter(filter)
+
+let queryTextNodesWithFilter2 = (node, selector, filter) =>
+  queryTextNodes2(node, selector).filter(filter)
 
 chrome.storage.local.get('state', obj => {
   const initialState = JSON.parse(obj.state || '{}')
@@ -90,41 +117,57 @@ chrome.storage.local.get('state', obj => {
     )
   , 'selector')
 
-  console.time('getTextNodesWithoutDenyNodes')
-  console.log(getTextNodesWithoutDenyNodes(denyNodes)(document))
-  console.timeEnd('getTextNodesWithoutDenyNodes')
-
+  /*
   console.time('queryTextNodesWithFilter')
-  console.log(queryTextNodesWithFilter(document, '*', denyNodesFilter(denyNodes)))
-  console.timeEnd('queryTextNodesWithFilter')
-
-  console.time('replace')
   _.each(rulesGroupBySelector, (rules, selector) => {
     _(queryTextNodesWithFilter(document, selector, denyNodesFilter(denyNodes)))
       .each(node =>
         _.each(rules, rule => replaceCorpse(rule, node)))
   })
-  console.timeEnd('replace')
+  console.timeEnd('queryTextNodesWithFilter')
+  */
+
+  /*
+  console.time('getAllTextNodesWithoutDenyNodes')
+  _.each(rulesGroupBySelector, (rules, selector) => {
+    let parentNodes = document.querySelectorAll(selector)
+    _(parentNodes)
+    .flatMap(parentNode => getAllTextNodesWithoutDenyNodes(parentNode, denyNodes))
+    .each(node =>
+      _.each(rules, rule => replaceCorpse(rule, node)))
+  })
+  console.timeEnd('getAllTextNodesWithoutDenyNodes')
+  */
+
+  /*
+  console.time('queryTextNodesWithFilter2')
+  _.each(rulesGroupBySelector, (rules, selector) => {
+    _(queryTextNodesWithFilter2(document, selector, denyNodesFilter(denyNodes)))
+      .each(node =>
+        _.each(rules, rule => replaceCorpse(rule, node)))
+  })
+  console.timeEnd('queryTextNodesWithFilter2')
+  */
+
+  console.time('getTextNodesDenyNodes')
+  _.each(rulesGroupBySelector, (rules, selector) => {
+    let parentNodes = document.querySelectorAll(selector)
+    _(parentNodes)
+    .flatMap(parentNode => getTextNodesDenyNodes(parentNode, denyNodes))
+    .each(node =>
+      _.each(rules, rule => replaceCorpse(rule, node)))
+  })
+  console.timeEnd('getTextNodesDenyNodes')
 
   new MutationObserver(mutations => {
-    /*
     function characterData({ target }) {
-      _.each(rulesGroupBySelector, (rules, selector) => {
-        _(queryTextNodesWithFilter(document, selector, denyNodesFilter(denyNodes)))
-          .each(node =>
-            _.each(rules, rule => replaceCorpse(rule, node)))
-      })
+
     }
 
     function childList({ target }) {
-      _.each(rulesGroupBySelector, (rules, selector) => {
-        _(queryTextNodesWithFilter(document, selector, denyNodesFilter(denyNodes)))
-          .each(node =>
-            _.each(rules, rule => replaceCorpse(rule, node)))
-      })
+
     }
     _.each(mutations, mutation => ({ characterData, childList })[mutation.type](mutation))
-    */
   })
   .observe(document.body, {
     characterData: true,

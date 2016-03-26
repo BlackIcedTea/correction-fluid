@@ -28,6 +28,7 @@
     "tabs",
     "contextMenus",
     "http://*/",
-    "https://*/"],
+    "https://*/"
+  ],
   "content_security_policy": "default-src 'self'; script-src 'self' https://localhost:3000 'unsafe-eval'; connect-src https://localhost:3000 wss://localhost:3000; style-src * 'unsafe-inline' 'self' blob:; img-src 'self' data:;"
 }

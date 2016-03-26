@@ -1,10 +1,10 @@
 import React, { Component, PropTypes } from 'react'
 import _ from 'lodash'
-import update from 'react-addons-update'
 import pure from 'purecss'
 import classNames from 'classnames'
+import update from 'react-addons-update'
 
-export default class RuleCreator extends Component {
+export default class RuleInlineCreator extends Component {
   static propTypes = {
     rules: PropTypes.array.isRequired,
     creators: PropTypes.object.isRequired
@@ -14,13 +14,13 @@ export default class RuleCreator extends Component {
     super(props, context)
     this.state = {
       rule: {
+        id: this.props.rules.reduce((maxId, rule) => Math.max(rule.id, maxId), -1) + 1,
         name: '',
         url: '',
         find: '',
         replace: '',
         selector: ''
-      },
-      tips: ''
+      }
     }
   }
 
@@ -50,69 +50,66 @@ export default class RuleCreator extends Component {
   }
 
   handleAdd = (event) => {
-    event.preventDefault()
     const { addRule } = this.props.creators
     addRule(this.state.rule)
     this.setState(update(this.state, {
       rule: {
         $set: {
+          id: this.props.rules.reduce((maxId, rule) => Math.max(rule.id, maxId), -1) + 1,
           name: '',
           url: '',
           find: '',
           replace: '',
           selector: ''
         }
-      },
-      tips: {
-        $set: 'Success!'
       }
     }))
-    setTimeout(() => {
-      this.setState(update(this.state), {
-        tips: {
-          $set: ''
-        }
-      })
-    }, 3000)
   }
 
   render() {
+
     return (
-      <form className={classNames(pure['pure-form'], pure['pure-form-stacked'])}>
-        <fieldset>
-          <legend>Create a rule</legend>
-          <label htmlFor="name">Name(Optional)</label>
-          <input id="name" type="text" value={this.state.rule.name}
-            onChange={this.linkState('rule.name')}
-          />
-          <label htmlFor="url">When tab URL matched</label>
-          <input id="url" type="text" list="datalist-url" value={this.state.rule.url}
-            onChange={this.linkState('rule.url')}
+      <tr>
+        <td>{this.state.id}</td>
+          <td>
+            <input id="name" type="text" value={this.state.rule.name}
+              onChange={this.linkState('rule.name')}
+            />
+          </td>
+        <td>
+          <input id="url" type="text" list="datalist-url"
+            value={this.state.rule.url} onChange={this.linkState('rule.url')}
           />
           <datalist id="datalist-url">
             <option value="*" />
           </datalist>
-          <label htmlFor="find">Find All</label>
-          <input id="find" type="text" value={this.state.rule.find}
-            onChange={this.linkState('rule.find')}
+        </td>
+        <td>
+          <input id="find" type="text"
+            value={this.state.rule.find} onChange={this.linkState('rule.find')}
           />
-          <label htmlFor="replace">Replace To</label>
-          <input id="replace" type="text" value={this.state.rule.replace}
-            onChange={this.linkState('rule.replace')}
+        </td>
+        <td>
+          <input id="replace" type="text"
+            value={this.state.rule.replace} onChange={this.linkState('rule.replace')}
           />
-          <label htmlFor="selector">CSS Selector(Optional)</label>
-          <input id="selector" type="text" value={this.state.rule.selector}
-            onChange={this.linkState('rule.selector')}
+        </td>
+        <td>
+          <input id="selector" type="text"
+            value={this.state.rule.selector} onChange={this.linkState('rule.selector')}
           />
-          <button
-            className={classNames(pure['pure-button'], pure['pure-button-primary'])}
+        </td>
+        <td>
+          <input type="checkbox" checked disabled />
+        </td>
+        <td>
+          <button className={classNames(pure['pure-button'], pure['pure-button-primary'])}
             onClick={this.handleAdd}
           >
           Okay
           </button>
-          <span>{this.state.tips}</span>
-        </fieldset>
-      </form>
+        </td>
+      </tr>
     )
   }
 }

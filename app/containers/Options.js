@@ -28,7 +28,6 @@ export default class App extends Component {
       <div>
         <RuleList rules={rules} creators={creators} />
         <RuleTool rules={rules} creators={creators} />
-        <RuleCreator rules={rules} creators={creators} />
       </div>
     )
   }

@@ -6,6 +6,7 @@ const actionsMap = {
   [ActionTypes.ADD_RULE](state, action) {
     return [...state, {
       id: state.reduce((maxId, rule) => Math.max(rule.id, maxId), -1) + 1,
+      name: action.name,
       url: action.url,
       find: action.find,
       replace: action.replace,
@@ -20,6 +21,7 @@ const actionsMap = {
     return state.map(rule => {
       if (rule.id === action.id) {
         return Object.assign({}, rule, {
+          name: action.name,
           url: action.url,
           find: action.find,
           replace: action.replace,

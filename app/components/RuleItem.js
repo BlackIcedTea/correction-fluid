@@ -1,8 +1,6 @@
 import _ from 'lodash'
 import React, { Component, PropTypes } from 'react'
 import update from 'react-addons-update'
-import { decorate as mixin } from 'react-mixin'
-import ToggleDisplay from 'react-toggle-display'
 import pure from 'purecss'
 import classNames from 'classnames'
 
@@ -95,12 +93,15 @@ export default class RuleCreator extends Component {
     const rule = this.props.rule
     const state = this.state
 
-    let result
-
     if (state.editing) {
       return (
         <tr>
           <td>{rule.id}</td>
+          <td>
+            <input id="name" type="text" value={state.rule.name}
+              onChange={this.linkState('rule.name')}
+            />
+          </td>
           <td>
             <input id="url" type="text" list="datalist-url"
               value={state.rule.url} onChange={this.linkState('rule.url')}
@@ -143,6 +144,7 @@ export default class RuleCreator extends Component {
     return (
       <tr>
         <td>{rule.id}</td>
+        <td>{rule.name}</td>
         <td>{rule.url}</td>
         <td>{rule.find}</td>
         <td>{rule.replace}</td>

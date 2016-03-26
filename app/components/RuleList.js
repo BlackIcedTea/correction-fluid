@@ -1,11 +1,9 @@
 import React, { Component, PropTypes } from 'react'
-import LinkedStateMixin from 'react-addons-linked-state-mixin'
-import { decorate as mixin } from 'react-mixin'
 import pure from 'purecss'
 import classNames from 'classnames'
 import RuleItem from './RuleItem'
+import RuleInlineCreator from './RuleInlineCreator'
 
-@mixin(LinkedStateMixin)
 export default class RuleList extends Component {
   static propTypes = {
     rules: PropTypes.array.isRequired,
@@ -23,6 +21,7 @@ export default class RuleList extends Component {
         <thead>
           <tr>
             <th>Id</th>
+            <th>Name</th>
             <th>URL</th>
             <th>Find</th>
             <th>Replace</th>
@@ -33,6 +32,7 @@ export default class RuleList extends Component {
         </thead>
         <tbody>
           {this.props.rules.map(rule => <RuleItem rule={rule} creators={this.props.creators} />)}
+          <RuleInlineCreator rules={this.props.rules} creators={this.props.creators} />
         </tbody>
       </table>
     )

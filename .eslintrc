@@ -27,7 +27,8 @@
     "func-names": 0,
     "prefer-const": 0,
     "comma-dangle": 0,
-    "no-param-reassign": [2, {"props": false}]
+    "no-param-reassign": [2, {"props": false}],
+    "no-shadow": 0
   },
   "plugins": [
     "react"

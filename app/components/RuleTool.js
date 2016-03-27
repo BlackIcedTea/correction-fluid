@@ -20,7 +20,10 @@ export default class RuleList extends Component {
     const { importRules } = this.props.creators
     Array.from(this.refs.fileChooser.files).forEach(file => {
       let reader = new FileReader()
-      reader.onload = evt => importRules(JSON.parse(evt.target.result))
+      reader.onload = evt => {
+        importRules(JSON.parse(evt.target.result))
+        this.refs.fileChooser.value = ''
+      }
       reader.readAsText(file)
     })
   }

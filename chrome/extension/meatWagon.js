@@ -32,6 +32,7 @@ function getVisibleArea(e) {
 
 function replaceCorpse({ find, replace }, node) {
   node.textContent = xRegExp.replace(node.textContent, find, replace)
+  node.isCorpsesReplaced = true
 }
 
 function denyNodesFilter(denyNodeList) {
@@ -39,7 +40,9 @@ function denyNodesFilter(denyNodeList) {
 }
 
 let queryTextNodes = (node, selector) => {
-  if (node.matches && !node.matches(selector)) {
+  if (node.isCorpsesReplaced
+  || node.contenteditable
+  || (node.matches && !node.matches(selector))) {
     return []
   }
   if (node.nodeType === Node.TEXT_NODE && getVisibleArea(node.parentNode) > 0) {
@@ -62,52 +65,102 @@ chrome.storage.local.get('state', obj => {
     )
   , 'selector')
 
-  /*
-  console.time('queryTextNodesWithFilter')
-  _.each(rulesGroupBySelector, (rules, selector) => {
-    _(queryTextNodesWithFilter(document, selector, denyNodesFilter(denyNodes)))
-      .each(node =>
-        _.each(rules, rule => replaceCorpse(rule, node)))
-  })
-  console.timeEnd('queryTextNodesWithFilter')
-  */
-
-  console.time('treeWalker')
-  _.each(rulesGroupBySelector, (rules, selector) => {
-    let treeWalker = document.createTreeWalker(
-      document,
-      NodeFilter.SHOW_TEXT,
-      {
-        acceptNode(node) {
-          if (denyNodesFilter(denyNodes)(node.parentNode)
-          && node.parentElement.matches(selector)
-          && getVisibleArea(node.parentNode) > 0) {
-            return NodeFilter.FILTER_ACCEPT
+  let replaceVisibleCorpses = root => {
+    _.each(rulesGroupBySelector, (rules, selector) => {
+      let treeWalker = document.createTreeWalker(
+        root,
+        NodeFilter.SHOW_TEXT,
+        {
+          acceptNode(node) {
+            if (!node.isCorpsesReplaced
+            && !node.contenteditable
+            && denyNodesFilter(denyNodes)(node.parentNode)
+            && (node.parentElement && node.parentElement.matches(selector))
+            && getVisibleArea(node.parentNode) > 0) {
+              return NodeFilter.FILTER_ACCEPT
+            }
+            return NodeFilter.FILTER_REJECT
           }
-          return NodeFilter.FILTER_REJECT
-        }
-      },
-      false
-    )
-    while (treeWalker.nextNode()) {
-      _.each(rules, rule => replaceCorpse(rule, treeWalker.currentNode))
-    }
+        },
+        false
+      )
+      while (treeWalker.nextNode()) {
+        _.each(rules, rule => replaceCorpse(rule, treeWalker.currentNode))
+      }
+    })
+  }
+
+  window.requestAnimationFrame(() => {
+    console.time('treeWalker')
+    replaceVisibleCorpses(document)
+    console.timeEnd('treeWalker')
   })
-  console.timeEnd('treeWalker')
 
   new MutationObserver(mutations => {
-    function characterData({ target }) {
-
+    function characterData(targets) {
+      window.requestAnimationFrame(() => {
+        console.time('characterData')
+        _.each(targets, target => {
+          _.each(rulesGroupBySelector, (rules, selector) => {
+            if (((target.matches && target.matches(selector))
+            || (target.parentElement
+              && target.parentElement.matches
+              && target.parentElement.matches(selector)))
+            && !(target.contentEditable
+              || (target.parentElement
+                && target.parentElement.contentEditable))
+              ) {
+              _.each(rules, rule => replaceCorpse(rule, target))
+            }
+          })
+        })
+        console.timeEnd('characterData')
+      })
     }
 
-    function childList({ target }) {
-
+    function childList(targets) {
+      window.requestAnimationFrame(() => {
+        console.time('childList')
+        let time = Date.now()
+        // replaceVisibleCorpses(document)
+        _.each(rulesGroupBySelector, (rules, selector) => {
+          _(queryTextNodesWithFilter({ childNodes: targets }, selector, denyNodesFilter(denyNodes)))
+            .uniq()
+            .each(node =>
+              _.each(rules, rule => replaceCorpse(rule, node)))
+        })
+        if (Date.now() - time > 500) {
+          console.log(targets)
+        }
+        console.timeEnd('childList')
+      })
     }
-    _.each(mutations, mutation => ({ characterData, childList })[mutation.type](mutation))
+
+    let mutationsGroup = _.groupBy(mutations, mutation => mutation.type)
+    _.each(mutationsGroup, (mutations, type) =>
+      ({ characterData, childList })[type](
+        _(mutations).map(mutation => mutation.target).uniq().value()
+      ))
   })
   .observe(document.body, {
     characterData: true,
     childList: true,
     subtree: true
   })
+
+  let ticking = false
+  let throttleReplaceVisibleCorpses = _.throttle(replaceVisibleCorpses, 300)
+
+  window.addEventListener('scroll', e => {
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        console.time('scroll')
+        throttleReplaceVisibleCorpses(document)
+        ticking = false
+        console.timeEnd('scroll')
+      })
+    } else {
+      ticking = true
+    }
+  }, true)
 })

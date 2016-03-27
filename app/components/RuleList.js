@@ -31,7 +31,10 @@ export default class RuleList extends Component {
           </tr>
         </thead>
         <tbody>
-          {this.props.rules.map(rule => <RuleItem rule={rule} creators={this.props.creators} />)}
+          {
+            this.props.rules.map(rule =>
+              <RuleItem rule={rule} creators={this.props.creators} key={rule.id} />)
+          }
           <RuleInlineCreator rules={this.props.rules} creators={this.props.creators} />
         </tbody>
       </table>

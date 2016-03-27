@@ -50,7 +50,7 @@ export default class RuleCreator extends Component {
   handleSave = e => {
     const { rule } = this.state
     const { editRule } = this.props.creators
-    editRule(rule.id, rule.url, rule.find, rule.replace, rule.selector)
+    editRule(rule.id, rule)
     this.setState(update(this.state, {
       editing: {
         $set: false

@@ -3,7 +3,7 @@ import R from 'ramda'
 import xRegExp from 'xregexp'
 import createStore from '../../app/store/configureStore'
 
-const denyNodes = ['style'].map(x => x.toUpperCase())
+const denyNodes = ['script', 'style'].map(x => x.toUpperCase())
 
 function getVisibleArea(e) {
   let { left, top, right, bottom, width, height } = e.getBoundingClientRect()
@@ -65,34 +65,72 @@ chrome.storage.local.get('state', obj => {
     )
   , 'selector')
 
-  let replaceVisibleCorpses = root => {
-    _.each(rulesGroupBySelector, (rules, selector) => {
-      let treeWalker = document.createTreeWalker(
-        root,
-        NodeFilter.SHOW_TEXT,
-        {
-          acceptNode(node) {
-            if (!node.isCorpsesReplaced
-            && !node.contenteditable
-            && denyNodesFilter(denyNodes)(node.parentNode)
-            && (node.parentElement && node.parentElement.matches(selector))
-            && getVisibleArea(node.parentNode) > 0) {
-              return NodeFilter.FILTER_ACCEPT
-            }
-            return NodeFilter.FILTER_REJECT
+  let replaceAllCorpses = root => {
+    let allNodes = []
+    let treeWalker = document.createTreeWalker(
+      root,
+      NodeFilter.SHOW_TEXT,
+      {
+        acceptNode(node) {
+          if (!node.isCorpsesReplaced
+          && !node.contenteditable
+          && denyNodesFilter(denyNodes)(node)) {
+            return NodeFilter.FILTER_ACCEPT
           }
-        },
-        false
-      )
-      while (treeWalker.nextNode()) {
-        _.each(rules, rule => replaceCorpse(rule, treeWalker.currentNode))
-      }
+          return NodeFilter.FILTER_REJECT
+        }
+      },
+      false
+    )
+    while (treeWalker.nextNode()) {
+      allNodes.push(treeWalker.currentNode)
+    }
+    // for (let i = 0, keys = Object.keys(rulesGroupBySelector), len = keys.length; i < len; i++) {
+    // let selector = keys[i]
+    // let rules = rulesGroupBySelector[selector]
+    _.each(rulesGroupBySelector, (rules, selector) => {
+      _(allNodes)
+      .filter(node => node.parentElement && node.parentElement.matches(selector))
+      .each(node => _.each(rules, rule => replaceCorpse(rule, node)))
     })
+    // }
+  }
+
+  let replaceVisibleCorpses = root => {
+    let visibleNodes = []
+    let treeWalker = document.createTreeWalker(
+      root,
+      NodeFilter.SHOW_TEXT,
+      {
+        acceptNode(node) {
+          if (!node.isCorpsesReplaced
+          && !node.contenteditable
+          && denyNodesFilter(denyNodes)(node)
+          && getVisibleArea(node.parentNode) > 0) {
+            return NodeFilter.FILTER_ACCEPT
+          }
+          return NodeFilter.FILTER_REJECT
+        }
+      },
+      false
+    )
+    while (treeWalker.nextNode()) {
+      visibleNodes.push(treeWalker.currentNode)
+    }
+    // for (let i = 0, keys = Object.keys(rulesGroupBySelector), len = keys.length; i < len; i++) {
+    // let selector = keys[i]
+    // let rules = rulesGroupBySelector[selector]
+    _.each(rulesGroupBySelector, (rules, selector) => {
+      _(visibleNodes)
+      .filter(node => node.parentElement && node.parentElement.matches(selector))
+      .each(node => _.each(rules, rule => replaceCorpse(rule, node)))
+    })
+    // }
   }
 
   window.requestAnimationFrame(() => {
     console.time('treeWalker')
-    replaceVisibleCorpses(document)
+    replaceAllCorpses(document)
     console.timeEnd('treeWalker')
   })
 
@@ -102,14 +140,15 @@ chrome.storage.local.get('state', obj => {
         console.time('characterData')
         _.each(targets, target => {
           _.each(rulesGroupBySelector, (rules, selector) => {
-            if (((target.matches && target.matches(selector))
-            || (target.parentElement
-              && target.parentElement.matches
-              && target.parentElement.matches(selector)))
+            if (denyNodesFilter(denyNodes)(target)
+            && (
+              (target.matches && target.matches(selector))
+              || (target.parentElement
+                && target.parentElement.matches
+                && target.parentElement.matches(selector)))
             && !(target.contentEditable
               || (target.parentElement
-                && target.parentElement.contentEditable))
-              ) {
+                && target.parentElement.contentEditable))) {
               _.each(rules, rule => replaceCorpse(rule, target))
             }
           })
@@ -121,8 +160,9 @@ chrome.storage.local.get('state', obj => {
     function childList(targets) {
       window.requestAnimationFrame(() => {
         console.time('childList')
-        let time = Date.now()
-        // replaceVisibleCorpses(document)
+        // let time = Date.now()
+        _.each(targets, target => replaceAllCorpses(target))
+        /*
         _.each(rulesGroupBySelector, (rules, selector) => {
           _(queryTextNodesWithFilter({ childNodes: targets }, selector, denyNodesFilter(denyNodes)))
             .uniq()
@@ -132,6 +172,7 @@ chrome.storage.local.get('state', obj => {
         if (Date.now() - time > 500) {
           console.log(targets)
         }
+        */
         console.timeEnd('childList')
       })
     }
@@ -149,18 +190,19 @@ chrome.storage.local.get('state', obj => {
   })
 
   let ticking = false
-  let throttleReplaceVisibleCorpses = _.throttle(replaceVisibleCorpses, 300)
+  // let throttleReplaceVisibleCorpses = _.throttle(replaceVisibleCorpses, 300)
 
-  window.addEventListener('scroll', e => {
+  /*
+  window.addEventListener('scroll', _.throttle(e => {
     if (!ticking) {
+      ticking = true
       window.requestAnimationFrame(() => {
         console.time('scroll')
-        throttleReplaceVisibleCorpses(document)
+        replaceVisibleCorpses(document)
         ticking = false
         console.timeEnd('scroll')
       })
-    } else {
-      ticking = true
     }
-  }, true)
+  }, 500), true)
+  */
 })

@@ -3,7 +3,7 @@ import R from 'ramda'
 import xRegExp from 'xregexp'
 import createStore from '../../app/store/configureStore'
 
-const denyNodes = ['script', 'style'].map(x => x.toUpperCase())
+const denyNodes = ['script', 'style', 'input', 'textarea'].map(x => x.toUpperCase())
 
 function getVisibleArea(e) {
   let { left, top, right, bottom, width, height } = e.getBoundingClientRect()

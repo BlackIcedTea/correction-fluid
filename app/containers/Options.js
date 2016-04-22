@@ -6,6 +6,7 @@ import RuleCreator from '../components/RuleCreator'
 import RuleList from '../components/RuleList'
 import RuleEditor from '../components/RuleEditor'
 import * as ActionCreator from '../creators/rules'
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 
 @connect(
   state => ({
@@ -27,8 +28,18 @@ export default class App extends Component {
 
     return (
       <div>
-        <RuleList rules={rules} creators={creators} />
-        <RuleEditor rules={rules} creators={creators} />
+        <Tabs>
+          <TabList>
+            <Tab>UI</Tab>
+            <Tab>Source</Tab>
+          </TabList>
+          <TabPanel>
+            <RuleList rules={rules} creators={creators} />
+          </TabPanel>
+          <TabPanel>
+            <RuleEditor rules={rules} creators={creators} />
+          </TabPanel>
+        </Tabs>
         <RuleTool rules={rules} creators={creators} />
       </div>
     )

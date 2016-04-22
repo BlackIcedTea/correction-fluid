@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import RuleTool from '../components/RuleTool'
 import RuleCreator from '../components/RuleCreator'
 import RuleList from '../components/RuleList'
+import RuleEditor from '../components/RuleEditor'
 import * as ActionCreator from '../creators/rules'
 
 @connect(
@@ -27,6 +28,7 @@ export default class App extends Component {
     return (
       <div>
         <RuleList rules={rules} creators={creators} />
+        <RuleEditor rules={rules} creators={creators} />
         <RuleTool rules={rules} creators={creators} />
       </div>
     )

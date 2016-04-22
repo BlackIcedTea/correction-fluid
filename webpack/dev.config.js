@@ -1,8 +1,8 @@
-const path = require('path');
-const webpack = require('webpack');
+const path = require('path')
+const webpack = require('webpack')
 
-const host = 'localhost';
-const port = 3000;
+const host = 'localhost'
+const port = 3000
 
 module.exports = {
   devtool: 'eval-cheap-module-source-map',
@@ -43,11 +43,19 @@ module.exports = {
       }
     }, {
       test: /\.css$/,
+      exclude: /(s-alert-default.css|s-alert-css-effects|normalize.css)/,
       loaders: [
         'style',
         'css?modules&sourceMap&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]',
         'postcss'
       ]
+    }, {
+      test: /\.css$/,
+      include: /(s-alert-default.css|s-alert-css-effects|normalize.css)/,
+      loader: 'style-loader!css-loader?sourceMap'
+    }, {
+      test: /\.json$/,
+      loader: 'json'
     }]
   }
-};
+}

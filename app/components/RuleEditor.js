@@ -17,14 +17,22 @@ export default class RuleEditor extends Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
-      text: yaml.safeDump(this.props.rules)
+      text: yaml.safeDump(this.props.rules.map(rule => {
+        delete rule.id
+        delete rule.isEnabled
+        return rule
+      }))
     }
   }
 
   handleReload = () => {
     this.setState(update(this.state, {
       text: {
-        $set: yaml.safeDump(this.props.rules)
+        $set: yaml.safeDump(this.props.rules.map(rule => {
+          delete rule.id
+          delete rule.isEnabled
+          return rule
+        }))
       }
     }))
   }

@@ -27,3 +27,7 @@ export function clearRules() {
 export function importRules(rules) {
   return { type: types.IMPORT_RULES, rules }
 }
+
+export function appendRules(rules) {
+  return { type: types.APPEND_RULES, rules }
+}

@@ -20,7 +20,6 @@ export default class RuleList extends Component {
       >
         <thead>
           <tr>
-            <th>Id</th>
             <th>Name</th>
             <th>URL</th>
             <th>Find</th>

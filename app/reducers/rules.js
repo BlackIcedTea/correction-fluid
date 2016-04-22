@@ -55,7 +55,18 @@ const actionsMap = {
     return []
   },
   [ActionTypes.IMPORT_RULES](state, action) {
-    return action.rules
+    return action.rules.map((rule, index) => Object.assign(rule, {
+      id: index + 1,
+      isEnabled: true
+    }))
+  },
+  [ActionTypes.APPEND_RULES](state, action) {
+    return [...state,
+      ...action.rules.map(rule => Object.assign(rule, {
+        id: state.reduce((maxId, rule) => Math.max(rule.id, maxId), -1) + 1,
+        isEnabled: true
+      }))
+    ]
   }
 }
 

@@ -70,7 +70,6 @@ export default class RuleInlineCreator extends Component {
 
     return (
       <tr>
-        <td>{this.state.id}</td>
           <td>
             <input id="name" type="text" value={this.state.rule.name}
               onChange={this.linkState('rule.name')}

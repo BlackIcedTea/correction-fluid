@@ -96,7 +96,6 @@ export default class RuleCreator extends Component {
     if (state.editing) {
       return (
         <tr>
-          <td>{rule.id}</td>
           <td>
             <input id="name" type="text" value={state.rule.name}
               onChange={this.linkState('rule.name')}
@@ -143,7 +142,6 @@ export default class RuleCreator extends Component {
     }
     return (
       <tr>
-        <td>{rule.id}</td>
         <td>{rule.name}</td>
         <td>{rule.url}</td>
         <td>{rule.find}</td>

@@ -36,7 +36,7 @@ function replaceCorpse({ find, replace }, node) {
 }
 
 function denyNodesFilter(denyNodeList) {
-  return ({ parentNode: { nodeName } }) => !denyNodeList.includes(nodeName)
+  return ({ parentNode }) => parentNode && !denyNodeList.includes(parentNode.nodeName)
 }
 
 let queryTextNodes = (node, selector) => {

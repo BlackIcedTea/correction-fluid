@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import xRegExp from 'xregexp'
+import wildcard from 'wildcard'
 import createStore from '../../../app/store/configureStore'
 
 let state = { rules: [] }
@@ -41,7 +42,8 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   loadScript('contextMenusHelper', tabId, () =>
     console.log(`${tab.url} contextMenusHelper injected.`))
 
-  if (_.some(state.rules, rule => xRegExp(rule.url).test(tab.url))) {
+  if (!_.some(state.exceptions, exception => wildcard(exception, tab.url))
+    && _.some(state.rules, rule => xRegExp(rule.url).test(tab.url))) {
     loadScript('meatWagon', tabId, () => console.log(`${tab.url} meatWagon injected.`))
   }
 })

@@ -4,9 +4,9 @@
   "manifest_version": 2,
   "description": "",
   "icons": {
-    "16": "img/icon-16.png",
-    "48": "img/icon-48.png",
-    "128": "img/icon-128.png"
+    "16": "assets/img/icon-16.png",
+    "48": "assets/img/icon-48.png",
+    "128": "assets/img/icon-128.png"
   },
   "browser_action": {
     "default_title": "Replaced Corpses Quick Setting",

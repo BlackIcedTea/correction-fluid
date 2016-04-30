@@ -85,15 +85,11 @@ chrome.storage.local.get('state', obj => {
     while (treeWalker.nextNode()) {
       allNodes.push(treeWalker.currentNode)
     }
-    // for (let i = 0, keys = Object.keys(rulesGroupBySelector), len = keys.length; i < len; i++) {
-    // let selector = keys[i]
-    // let rules = rulesGroupBySelector[selector]
     _.each(rulesGroupBySelector, (rules, selector) => {
       _(allNodes)
       .filter(node => node.parentElement && node.parentElement.matches(selector))
       .each(node => _.each(rules, rule => replaceCorpse(rule, node)))
     })
-    // }
   }
 
   let replaceVisibleCorpses = root => {
@@ -117,15 +113,11 @@ chrome.storage.local.get('state', obj => {
     while (treeWalker.nextNode()) {
       visibleNodes.push(treeWalker.currentNode)
     }
-    // for (let i = 0, keys = Object.keys(rulesGroupBySelector), len = keys.length; i < len; i++) {
-    // let selector = keys[i]
-    // let rules = rulesGroupBySelector[selector]
     _.each(rulesGroupBySelector, (rules, selector) => {
       _(visibleNodes)
       .filter(node => node.parentElement && node.parentElement.matches(selector))
       .each(node => _.each(rules, rule => replaceCorpse(rule, node)))
     })
-    // }
   }
 
   window.requestAnimationFrame(() => {
@@ -160,19 +152,7 @@ chrome.storage.local.get('state', obj => {
     function childList(targets) {
       window.requestAnimationFrame(() => {
         console.time('childList')
-        // let time = Date.now()
         _.each(targets, target => replaceAllCorpses(target))
-        /*
-        _.each(rulesGroupBySelector, (rules, selector) => {
-          _(queryTextNodesWithFilter({ childNodes: targets }, selector, denyNodesFilter(denyNodes)))
-            .uniq()
-            .each(node =>
-              _.each(rules, rule => replaceCorpse(rule, node)))
-        })
-        if (Date.now() - time > 500) {
-          console.log(targets)
-        }
-        */
         console.timeEnd('childList')
       })
     }
@@ -190,19 +170,4 @@ chrome.storage.local.get('state', obj => {
   })
 
   let ticking = false
-  // let throttleReplaceVisibleCorpses = _.throttle(replaceVisibleCorpses, 300)
-
-  /*
-  window.addEventListener('scroll', _.throttle(e => {
-    if (!ticking) {
-      ticking = true
-      window.requestAnimationFrame(() => {
-        console.time('scroll')
-        replaceVisibleCorpses(document)
-        ticking = false
-        console.timeEnd('scroll')
-      })
-    }
-  }, 500), true)
-  */
 })

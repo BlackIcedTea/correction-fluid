@@ -6,3 +6,5 @@ export const DISABLE_RULE = 'DISABLE_RULE'
 export const CLEAR_RULES = 'CLEAR_RULES'
 export const IMPORT_RULES = 'IMPORT_RULES'
 export const APPEND_RULES = 'APPEND_RULES'
+
+export const IMPORT_EXCEPTIONS = 'IMPORT_EXCEPTIONS'

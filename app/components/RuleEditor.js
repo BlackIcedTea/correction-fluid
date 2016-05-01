@@ -18,18 +18,19 @@ export default class RuleEditor extends Component {
     super(props, context)
     this.state = {
       text: yaml.safeDump(this.props.rules.map(rule => {
-        if (rule.hasOwnProperty('name') && rule.name.trim() === '') {
-          delete rule.name
+        let newRule = Object.assign({}, rule)
+        if (newRule.hasOwnProperty('name') && newRule.name.trim() === '') {
+          delete newRule.name
         }
-        if (rule.hasOwnProperty('selector') && rule.selector.trim() === '*') {
-          delete rule.selector
+        if (newRule.hasOwnProperty('selector') && newRule.selector.trim() === '*') {
+          delete newRule.selector
         }
-        if (rule.hasOwnProperty('url') && rule.url.trim() === 'http') {
-          delete rule.url
+        if (newRule.hasOwnProperty('url') && newRule.url.trim() === 'http') {
+          delete newRule.url
         }
-        delete rule.id
-        delete rule.isEnabled
-        return rule
+        delete newRule.id
+        delete newRule.isEnabled
+        return newRule
       }))
     }
   }
@@ -38,18 +39,19 @@ export default class RuleEditor extends Component {
     this.setState(update(this.state, {
       text: {
         $set: yaml.safeDump(this.props.rules.map(rule => {
-          if (rule.hasOwnProperty('name') && rule.name.trim() === '') {
-            delete rule.name
+          let newRule = Object.assign({}, rule)
+          if (newRule.hasOwnProperty('name') && newRule.name.trim() === '') {
+            delete newRule.name
           }
-          if (rule.hasOwnProperty('selector') && rule.selector.trim() === '*') {
-            delete rule.selector
+          if (newRule.hasOwnProperty('selector') && newRule.selector.trim() === '*') {
+            delete newRule.selector
           }
-          if (rule.hasOwnProperty('url') && rule.url.trim() === 'http') {
-            delete rule.url
+          if (newRule.hasOwnProperty('url') && newRule.url.trim() === 'http') {
+            delete newRule.url
           }
-          delete rule.id
-          delete rule.isEnabled
-          return rule
+          delete newRule.id
+          delete newRule.isEnabled
+          return newRule
         }))
       }
     }))

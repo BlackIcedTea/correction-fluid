@@ -16,10 +16,10 @@ export default class RuleInlineCreator extends Component {
       rule: {
         id: this.props.rules.reduce((maxId, rule) => Math.max(rule.id, maxId), -1) + 1,
         name: '',
-        url: '',
+        url: 'http',
         find: '',
         replace: '',
-        selector: ''
+        selector: '*'
       }
     }
   }
@@ -57,10 +57,10 @@ export default class RuleInlineCreator extends Component {
         $set: {
           id: this.props.rules.reduce((maxId, rule) => Math.max(rule.id, maxId), -1) + 1,
           name: '',
-          url: '',
+          url: 'http',
           find: '',
           replace: '',
-          selector: ''
+          selector: '*'
         }
       }
     }))
@@ -70,13 +70,16 @@ export default class RuleInlineCreator extends Component {
 
     return (
       <tr>
-          <td>
-            <input id="name" type="text" value={this.state.rule.name}
-              onChange={this.linkState('rule.name')}
-            />
-          </td>
         <td>
-          <input id="url" type="text" list="datalist-url"
+          <input
+            id="name" type="text" value={this.state.rule.name}
+            onChange={this.linkState('rule.name')}
+          />
+        </td>
+        <td>
+          <input
+            id="url" type="text" list="datalist-url"
+            required
             value={this.state.rule.url} onChange={this.linkState('rule.url')}
           />
           <datalist id="datalist-url">
@@ -84,17 +87,22 @@ export default class RuleInlineCreator extends Component {
           </datalist>
         </td>
         <td>
-          <input id="find" type="text"
+          <input
+            id="find" type="text"
+            required
             value={this.state.rule.find} onChange={this.linkState('rule.find')}
           />
         </td>
         <td>
-          <input id="replace" type="text"
+          <input
+            id="replace" type="text"
+            required
             value={this.state.rule.replace} onChange={this.linkState('rule.replace')}
           />
         </td>
         <td>
-          <input id="selector" type="text"
+          <input
+            id="selector" type="text"
             value={this.state.rule.selector} onChange={this.linkState('rule.selector')}
           />
         </td>
@@ -102,7 +110,8 @@ export default class RuleInlineCreator extends Component {
           <input type="checkbox" checked disabled />
         </td>
         <td>
-          <button className={classNames(pure['pure-button'], pure['pure-button-primary'])}
+          <button
+            className={classNames(pure['pure-button'], pure['pure-button-primary'])}
             onClick={this.handleAdd}
           >
           Okay

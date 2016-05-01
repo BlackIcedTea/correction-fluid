@@ -28,6 +28,7 @@ export default class RuleList extends Component {
         reader.onload = evt => {
           try {
             let newRules = yaml.safeLoad(evt.target.result)
+            console.log(newRules)
             creator(newRules)
           } catch (e) {
             Alert.error(e.message)
@@ -40,18 +41,19 @@ export default class RuleList extends Component {
 
   handleExport = event => {
     let blob = new Blob([yaml.safeDump(this.props.rules.map(rule => {
-      if (rule.hasOwnProperty('name') && rule.name.trim() === '') {
-        delete rule.name
+      let newRule = Object.assign({}, rule)
+      if (newRule.hasOwnProperty('name') && newRule.name.trim() === '') {
+        delete newRule.name
       }
-      if (rule.hasOwnProperty('selector') && rule.selector.trim() === '*') {
-        delete rule.selector
+      if (newRule.hasOwnProperty('selector') && newRule.selector.trim() === '*') {
+        delete newRule.selector
       }
-      if (rule.hasOwnProperty('url') && rule.url.trim() === 'http') {
-        delete rule.url
+      if (newRule.hasOwnProperty('url') && newRule.url.trim() === 'http') {
+        delete newRule.url
       }
-      delete rule.id
-      delete rule.isEnabled
-      return rule
+      delete newRule.id
+      delete newRule.isEnabled
+      return newRule
     }))], { type: 'application/x-yaml' })
     let link = this.refs.downloader
     link.href = URL.createObjectURL(blob)

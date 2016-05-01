@@ -19,12 +19,14 @@ module.exports = {
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.IgnorePlugin(/[^/]+\/[\S]+.dev$/),
     new webpack.optimize.DedupePlugin(),
+    /*
     new webpack.optimize.UglifyJsPlugin({
       comments: false,
       compressor: {
         warnings: false
       }
     }),
+    */
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify('production')
@@ -41,11 +43,16 @@ module.exports = {
       exclude: /node_modules/
     }, {
       test: /\.css$/,
+      exclude: /(s-alert-default.css|s-alert-css-effects|normalize.css)/,
       loaders: [
         'style',
         'css?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]',
         'postcss'
       ]
+    }, {
+      test: /\.css$/,
+      include: /(s-alert-default.css|s-alert-css-effects|normalize.css)/,
+      loader: 'style-loader!css-loader?sourceMap'
     }, {
       test: /\.json$/,
       loader: 'json'

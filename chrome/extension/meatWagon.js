@@ -171,3 +171,5 @@ chrome.storage.local.get('state', obj => {
 
   let ticking = false
 })
+
+console.log('meatWagon injected.')

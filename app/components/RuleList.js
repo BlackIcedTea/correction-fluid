@@ -12,10 +12,11 @@ export default class RuleList extends Component {
 
   render() {
     return (
-      <table className={classNames(
-        pure['pure-table'],
-        pure['pure-table-bordered'],
-        pure['pure-table-striped']
+      <table
+        className={classNames(
+          pure['pure-table'],
+          pure['pure-table-bordered'],
+          pure['pure-table-striped']
         )}
       >
         <thead>

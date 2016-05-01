@@ -15,7 +15,7 @@ export default class RuleCreator extends Component {
     this.state = {
       rule: {
         name: '',
-        url: '',
+        url: 'http',
         find: '',
         replace: '',
         selector: ''
@@ -57,7 +57,7 @@ export default class RuleCreator extends Component {
       rule: {
         $set: {
           name: '',
-          url: '',
+          url: 'http',
           find: '',
           replace: '',
           selector: ''
@@ -78,7 +78,9 @@ export default class RuleCreator extends Component {
 
   render() {
     return (
-      <form className={classNames(pure['pure-form'], pure['pure-form-stacked'])}>
+      <form className={classNames(pure['pure-form'], pure['pure-form-stacked'])}
+        onSubmit={this.handleAdd}
+      >
         <fieldset>
           <legend>Create a rule</legend>
           <label htmlFor="name">Name(Optional)</label>
@@ -87,6 +89,7 @@ export default class RuleCreator extends Component {
           />
           <label htmlFor="url">When tab URL matched</label>
           <input id="url" type="text" list="datalist-url" value={this.state.rule.url}
+            required
             onChange={this.linkState('rule.url')}
           />
           <datalist id="datalist-url">
@@ -94,22 +97,23 @@ export default class RuleCreator extends Component {
           </datalist>
           <label htmlFor="find">Find All</label>
           <input id="find" type="text" value={this.state.rule.find}
+            required
             onChange={this.linkState('rule.find')}
           />
           <label htmlFor="replace">Replace To</label>
           <input id="replace" type="text" value={this.state.rule.replace}
+            required
             onChange={this.linkState('rule.replace')}
           />
           <label htmlFor="selector">CSS Selector(Optional)</label>
           <input id="selector" type="text" value={this.state.rule.selector}
             onChange={this.linkState('rule.selector')}
           />
-          <button
+          <input
+            type="submit"
             className={classNames(pure['pure-button'], pure['pure-button-primary'])}
-            onClick={this.handleAdd}
-          >
-          Okay
-          </button>
+            value="Okay"
+          />
           <span>{this.state.tips}</span>
         </fieldset>
       </form>

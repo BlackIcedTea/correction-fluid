@@ -3,6 +3,7 @@ import pure from 'purecss'
 import classNames from 'classnames'
 import RuleItem from './RuleItem'
 import yaml from 'js-yaml'
+import Alert from 'react-s-alert'
 
 export default class RuleList extends Component {
   static propTypes = {
@@ -19,14 +20,19 @@ export default class RuleList extends Component {
 
   handleAppend = event => this.refs.appendFileChooser.click()
 
-  handleFileChoose = creatorName =>
+  handleFileChoose = (creatorName, refName) =>
     event => {
       const creator = this.props.creators[creatorName]
-      Array.from(this.refs.fileChooser.files).forEach(file => {
+      Array.from(this.refs[refName].files).forEach(file => {
         let reader = new FileReader()
         reader.onload = evt => {
-          creator(JSON.parse(evt.target.result))
-          this.refs.fileChooser.value = ''
+          try {
+            let newRules = yaml.safeLoad(evt.target.result)
+            creator(newRules)
+          } catch (e) {
+            Alert.error(e.message)
+          }
+          this.refs[refName].value = ''
         }
         reader.readAsText(file)
       })
@@ -34,6 +40,15 @@ export default class RuleList extends Component {
 
   handleExport = event => {
     let blob = new Blob([yaml.safeDump(this.props.rules.map(rule => {
+      if (rule.hasOwnProperty('name') && rule.name.trim() === '') {
+        delete rule.name
+      }
+      if (rule.hasOwnProperty('selector') && rule.selector.trim() === '*') {
+        delete rule.selector
+      }
+      if (rule.hasOwnProperty('url') && rule.url.trim() === 'http') {
+        delete rule.url
+      }
       delete rule.id
       delete rule.isEnabled
       return rule
@@ -47,12 +62,17 @@ export default class RuleList extends Component {
   render() {
     return (
       <div>
+        <Alert />
         <button className={pure['pure-button']} onClick={this.handleClear}>Clear All</button>
-        <input ref="importFileChooser" type="file" multiple accept=".json"
-          style={{ display: 'none' }} onChange={this.handleFileChoose('importRules')}
+        <input
+          ref="importFileChooser" type="file" multiple accept=".yaml"
+          style={{ display: 'none' }}
+          onChange={this.handleFileChoose('importRules', 'importFileChooser')}
         />
-        <input ref="appendFileChooser" type="file" multiple accept=".json"
-          style={{ display: 'none' }} onChange={this.handleFileChoose('appendRules')}
+        <input
+          ref="appendFileChooser" type="file" multiple accept=".yaml"
+          style={{ display: 'none' }}
+          onChange={this.handleFileChoose('appendRules', 'appendFileChooser')}
         />
         <button className={pure['pure-button']} onClick={this.handleImport}>
         Import File
@@ -60,7 +80,7 @@ export default class RuleList extends Component {
         <button className={pure['pure-button']} onClick={this.handleAppend}>
         Append File
         </button>
-        <a ref="downloader" download="export.json" style={{ display: 'none' }} />
+        <a ref="downloader" download="rules.yaml" style={{ display: 'none' }} />
         <button className={pure['pure-button']} onClick={this.handleExport}>Export File</button>
       </div>
     )

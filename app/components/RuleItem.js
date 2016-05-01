@@ -97,12 +97,14 @@ export default class RuleCreator extends Component {
       return (
         <tr>
           <td>
-            <input id="name" type="text" value={state.rule.name}
+            <input
+              id="name" type="text" value={state.rule.name}
               onChange={this.linkState('rule.name')}
             />
           </td>
           <td>
-            <input id="url" type="text" list="datalist-url"
+            <input
+              id="url" type="text" list="datalist-url"
               value={state.rule.url} onChange={this.linkState('rule.url')}
             />
             <datalist id="datalist-url">
@@ -110,22 +112,26 @@ export default class RuleCreator extends Component {
             </datalist>
           </td>
           <td>
-            <input id="find" type="text"
+            <input
+              id="find" type="text"
               value={state.rule.find} onChange={this.linkState('rule.find')}
             />
           </td>
           <td>
-            <input id="replace" type="text"
+            <input
+              id="replace" type="text"
               value={state.rule.replace} onChange={this.linkState('rule.replace')}
             />
           </td>
           <td>
-            <input id="selector" type="text"
+            <input
+              id="selector" type="text"
               value={state.rule.selector} onChange={this.linkState('rule.selector')}
             />
           </td>
           <td>
-            <input type="checkbox" checked={rule.isEnabled}
+            <input
+              type="checkbox" checked={rule.isEnabled}
               onChange={this.handleIsEnabledChange}
             />
           </td>
@@ -148,7 +154,8 @@ export default class RuleCreator extends Component {
         <td>{rule.replace}</td>
         <td>{rule.selector}</td>
         <td>
-          <input type="checkbox" checked={rule.isEnabled}
+          <input
+            type="checkbox" checked={rule.isEnabled}
             onChange={this.handleIsEnabledChange}
           />
         </td>

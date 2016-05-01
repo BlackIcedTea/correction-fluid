@@ -6,11 +6,11 @@ const actionsMap = {
   [ActionTypes.ADD_RULE](state, action) {
     return [...state, {
       id: state.reduce((maxId, rule) => Math.max(rule.id, maxId), -1) + 1,
-      name: action.name,
-      url: action.url,
-      find: action.find,
-      replace: action.replace,
-      selector: action.selector,
+      name: action.name || '',
+      url: action.url || 'http',
+      find: action.find || '',
+      replace: action.replace || '',
+      selector: action.selector || '*',
       isEnabled: true
     }]
   },
@@ -21,11 +21,11 @@ const actionsMap = {
     return state.map(rule => {
       if (rule.id === action.id) {
         return Object.assign({}, rule, {
-          name: action.name,
-          url: action.url,
-          find: action.find,
-          replace: action.replace,
-          selector: action.selector
+          name: action.name || '',
+          url: action.url || 'http',
+          find: action.find || '',
+          replace: action.replace || '',
+          selector: action.selector || '*'
         })
       }
       return rule
@@ -55,14 +55,26 @@ const actionsMap = {
     return []
   },
   [ActionTypes.IMPORT_RULES](state, action) {
-    return action.rules.map((rule, index) => Object.assign(rule, {
+    return action.rules.map((rule, index) => Object.assign({
+      name: '',
+      url: 'http',
+      find: '',
+      replace: '',
+      selector: '*'
+    }, rule, {
       id: index + 1,
       isEnabled: true
     }))
   },
   [ActionTypes.APPEND_RULES](state, action) {
     return [...state,
-      ...action.rules.map(rule => Object.assign(rule, {
+      ...action.rules.map(rule => Object.assign({
+        name: '',
+        url: 'http',
+        find: '',
+        replace: '',
+        selector: '*'
+      }, rule, {
         id: state.reduce((maxId, rule) => Math.max(rule.id, maxId), -1) + 1,
         isEnabled: true
       }))

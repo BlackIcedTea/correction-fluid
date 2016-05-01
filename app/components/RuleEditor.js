@@ -18,6 +18,15 @@ export default class RuleEditor extends Component {
     super(props, context)
     this.state = {
       text: yaml.safeDump(this.props.rules.map(rule => {
+        if (rule.hasOwnProperty('name') && rule.name.trim() === '') {
+          delete rule.name
+        }
+        if (rule.hasOwnProperty('selector') && rule.selector.trim() === '*') {
+          delete rule.selector
+        }
+        if (rule.hasOwnProperty('url') && rule.url.trim() === 'http') {
+          delete rule.url
+        }
         delete rule.id
         delete rule.isEnabled
         return rule
@@ -29,6 +38,15 @@ export default class RuleEditor extends Component {
     this.setState(update(this.state, {
       text: {
         $set: yaml.safeDump(this.props.rules.map(rule => {
+          if (rule.hasOwnProperty('name') && rule.name.trim() === '') {
+            delete rule.name
+          }
+          if (rule.hasOwnProperty('selector') && rule.selector.trim() === '*') {
+            delete rule.selector
+          }
+          if (rule.hasOwnProperty('url') && rule.url.trim() === 'http') {
+            delete rule.url
+          }
           delete rule.id
           delete rule.isEnabled
           return rule

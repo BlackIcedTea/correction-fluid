@@ -1,15 +1,15 @@
 {
   "version": "1.0.0",
-  "name": "Replaced Corpses",
+  "name": "Correction Fluid",
   "manifest_version": 2,
-  "description": "",
+  "description": "Automatically replace the text of a page to what you want.",
   "icons": {
     "16": "assets/img/icon-16.png",
     "48": "assets/img/icon-48.png",
     "128": "assets/img/icon-128.png"
   },
   "browser_action": {
-    "default_title": "Replaced Corpses Quick Setting",
+    "default_title": "Add a rule quickly",
     "default_popup": "popup.html"
   },
   "web_accessible_resources": [

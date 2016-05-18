@@ -39,9 +39,6 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     return
   }
 
-  loadScript('contextMenusHelper', tabId, () =>
-    console.log(`${tab.url} contextMenusHelper injected.`))
-
   if (!_.some(state.exceptions, exception => wildcard(exception, tab.url))
     && _.some(state.rules, rule => xRegExp(rule.url).test(tab.url))) {
     loadScript('meatWagon', tabId, () => console.log(`${tab.url} meatWagon injected.`))

@@ -121,9 +121,9 @@ chrome.storage.local.get('state', obj => {
   }
 
   window.requestAnimationFrame(() => {
-    console.time('treeWalker')
+    // console.time('treeWalker')
     replaceAllCorpses(document)
-    console.timeEnd('treeWalker')
+    // console.timeEnd('treeWalker')
   })
 
   new MutationObserver(mutations => {
@@ -145,15 +145,15 @@ chrome.storage.local.get('state', obj => {
             }
           })
         })
-        console.timeEnd('characterData')
+        // console.timeEnd('characterData')
       })
     }
 
     function childList(targets) {
       window.requestAnimationFrame(() => {
-        console.time('childList')
+        // console.time('childList')
         _.each(targets, target => replaceAllCorpses(target))
-        console.timeEnd('childList')
+        // console.timeEnd('childList')
       })
     }
 
@@ -172,4 +172,4 @@ chrome.storage.local.get('state', obj => {
   let ticking = false
 })
 
-console.log('meatWagon injected.')
+// console.log('meatWagon injected.')

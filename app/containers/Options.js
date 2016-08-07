@@ -49,7 +49,7 @@ export default class App extends Component {
         </Tabs>
         <h2>Rules Control</h2>
         <RuleTool rules={rules} creators={ruleCreators} />
-        <h2>Exceptions(URL)</h2>
+        <h2>Exceptions(RegExp match URL, need restart extension to apply)</h2>
         <ExceptionEditor exceptions={exceptions} creators={exceptionCreators} />
       </div>
     )

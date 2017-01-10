@@ -29,5 +29,6 @@
     "http://*/",
     "https://*/"
   ],
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyqctNN7CtopxPdkdbmEu4ia/+ss9kIwBDP8Uy0PzeuCgmvYh+jV/DqOlHWlB4FMf1SQJQN41fsuQuVGXL/dtqhXvmPgcy4XPdYudX9S3vcFhHiJX3o2Wl6mbqKCh7P1LpMbT2BnP3lmF//Gi09yFG158V1fvjcNsO65HJYKE+/tYorPORrvIbCy+tVpx/PBuvQyHp3dI+pUGZkp5erM007cIU/0NHoEKxtHadOhrc7dgW+Ql9NadMieS1XkPrkFK5N4hYsEHXMWPhOe7INGo3v1w7x3HBzep91WC0dJ9n9xKYLyyL1A7xeUcfzeY1n0sPmvMkn+xcBypUqNkCJjE+wIDAQAB",
   "content_security_policy": "default-src 'self'; script-src 'self'; style-src * 'unsafe-inline'; img-src 'self' data:;"
 }
